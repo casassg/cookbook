@@ -67,6 +67,8 @@ public abstract class Repository <T extends Entity>{
             ret.add(tmp);
             cursor.moveToNext();
         }
+        cursor.close();
+        db.close();
         return ret;
     }
 
