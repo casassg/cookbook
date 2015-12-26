@@ -7,17 +7,21 @@ import java.util.List;
  *
  * @author casassg
  */
-public class Recepta {
+public class Recepta  implements Entity{
     private String description;
     private List<Integer> ingredients;
     private String title;
-    private int id;
+    private long id;
 
     public Recepta(String description, List<Integer> ingredients, String title, int id) {
         this.description = description;
         this.ingredients = ingredients;
         this.title = title;
         this.id = id;
+    }
+
+    public Recepta() {
+
     }
 
     public String getDescription() {
@@ -44,11 +48,11 @@ public class Recepta {
         this.title = title;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 }

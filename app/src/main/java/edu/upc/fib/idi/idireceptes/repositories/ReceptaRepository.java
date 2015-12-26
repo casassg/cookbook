@@ -1,6 +1,7 @@
 package edu.upc.fib.idi.idireceptes.repositories;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import edu.upc.fib.idi.idireceptes.data.ReceptaContract.ReceptaEntry;
 import edu.upc.fib.idi.idireceptes.data.ReceptaDBHelper;
@@ -18,6 +19,24 @@ public class ReceptaRepository extends Repository<Recepta>{
     }
 
     @Override
+    protected Recepta parseRow(Cursor cursor) {
+        Recepta recepta = new Recepta();
+        String name = cursor.getString(
+                cursor.getColumnIndex(ReceptaEntry.COL_NAME)
+        );
+        String descr = cursor.getString(
+                cursor.getColumnIndex(ReceptaEntry.COL_DESCR)
+        );
+        long id = cursor.getLong(
+                cursor.getColumnIndex(ReceptaEntry._ID)
+        );
+        recepta.setTitle(name);
+        recepta.setDescription(descr);
+        recepta.setId(id);
+        return recepta;
+    }
+
+    @Override
     protected String getTableName() {
         return ReceptaEntry.TABLE_NAME;
     }
@@ -28,7 +47,7 @@ public class ReceptaRepository extends Repository<Recepta>{
         values.put(ReceptaEntry.COL_DESCR,object.getDescription());
         values.put(ReceptaEntry.COL_NAME,object.getTitle());
         values.put(ReceptaEntry.COL_DESCR,object.getDescription());
-        return null;
+        return values;
     }
 
     @Override
