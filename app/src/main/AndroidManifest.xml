@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.upc.fib.idi.idireceptes" >
+    package="edu.upc.fib.idi.idireceptes">
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name=".controller.MainActivity"
-            android:label="@string/app_name" >
+            android:name=".activity.ReceptaListActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,7 +19,7 @@
         </activity>
         <activity
             android:name=".temp.AndroidDatabaseManager"
-            android:label="DB_MANAGER" >
+            android:label="DB_MANAGER">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,12 +27,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".controller.DetailActivity"
-            android:label="@string/title_activity_detail"
-            android:parentActivityName=".controller.MainActivity" >
+            android:name=".activity.ReceptaDetailActivity"
+            android:label="@string/title_recepta_detail"
+            android:parentActivityName=".activity.ReceptaListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.upc.fib.idi.idireceptes.controller.MainActivity" />
+                android:value="edu.upc.fib.idi.idireceptes.activity.ReceptaListActivity" />
+        </activity>
+        <activity
+            android:name=".activity.InputActivity"
+            android:label="@string/title_activity_input"
+            android:parentActivityName=".activity.ReceptaListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.upc.fib.idi.idireceptes.activity.ReceptaListActivity" />
         </activity>
     </application>
 

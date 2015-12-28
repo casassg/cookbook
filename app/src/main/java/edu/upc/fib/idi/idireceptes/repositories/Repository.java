@@ -62,7 +62,7 @@ public abstract class Repository <T extends Entity>{
         );
         List<T> ret = new ArrayList<>();
         cursor.moveToFirst();
-        if(!cursor.isAfterLast()) {
+        while (!cursor.isAfterLast()) {
             T tmp = parseRow(cursor);
             ret.add(tmp);
             cursor.moveToNext();
