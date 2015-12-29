@@ -23,9 +23,8 @@ import edu.upc.fib.idi.idireceptes.data.ReceptaContract.ReceptaEntry;
  */
 public class ReceptaDBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
-
     static final String DATABASE_NAME = "recepta.db";
+    private static final int DATABASE_VERSION = 1;
 
     public ReceptaDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -66,6 +65,7 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
         cv.put(ReceptaEntry.COL_DESCR, "Obrir ou en cassola, coure, extreure");
         return cv;
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

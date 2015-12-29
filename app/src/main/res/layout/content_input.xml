@@ -15,20 +15,31 @@
         android:layout_margin="@dimen/text_margin"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/titol"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Titol" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/description"
+            <EditText
+                android:id="@+id/titol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/input_titol"
+                android:inputType="textCapSentences" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="8"
-            android:ems="10"
-            android:hint="Descripció"
-            android:inputType="textMultiLine" />
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:ems="10"
+                android:hint="@string/input_descripcio"
+                android:inputType="textCapSentences|textMultiLine" />
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/button"

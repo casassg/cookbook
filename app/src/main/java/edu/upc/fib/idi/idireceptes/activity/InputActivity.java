@@ -1,5 +1,6 @@
 package edu.upc.fib.idi.idireceptes.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -36,11 +37,26 @@ public class InputActivity extends AppCompatActivity {
     public void insertRecepta(View view) {
         EditText editTitol = (EditText) findViewById(R.id.titol);
         EditText editDescripcio = (EditText) findViewById(R.id.description);
+
+        String description = editDescripcio.getText().toString();
+        String title = editTitol.getText().toString();
+
+        if ("".equals(description) || "".equals(title)) {
+            Snackbar.make(view, R.string.input_not_completed, Snackbar.LENGTH_SHORT).show();
+            return;
+        }
         Recepta recepta = new Recepta();
-        recepta.setDescription(editDescripcio.getText().toString());
-        recepta.setTitle(editTitol.getText().toString());
+        recepta.setDescription(description);
+        recepta.setTitle(title);
+
         ReceptaRepository repository = Factory.getInstanceReceptaRepository(getApplicationContext());
-        repository.insert(recepta);
+        long id = repository.insert(recepta);
+
+        Intent intent = new Intent(getApplicationContext(), ReceptaListActivity.class);
+        intent.putExtra(ReceptaListActivity.ID_RECEPTA, id);
+        setResult(RESULT_OK, intent);
+
         finish();
+
     }
 }

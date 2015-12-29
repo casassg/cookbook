@@ -1,6 +1,5 @@
 package edu.upc.fib.idi.idireceptes.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,6 +29,8 @@ import edu.upc.fib.idi.idireceptes.util.Factory;
  */
 public class ReceptaListActivity extends AppCompatActivity {
 
+    public static final String ID_RECEPTA = "id_recepta";
+    static final int NEW_RECEPTA = 42;
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -54,7 +55,7 @@ public class ReceptaListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), InputActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, NEW_RECEPTA);
             }
         });
 
@@ -72,6 +73,17 @@ public class ReceptaListActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == NEW_RECEPTA && resultCode == RESULT_OK) {
+            if (data.hasExtra(ID_RECEPTA)) {
+                long id = data.getLongExtra(ID_RECEPTA, 1);
+                openRecepta(id);
+            }
+        }
+    }
+
+    @Override
     protected void onRestart() {
         super.onRestart();
         View recyclerView = findViewById(R.id.recepta_list);
@@ -81,6 +93,22 @@ public class ReceptaListActivity extends AppCompatActivity {
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(repository.getAll()));
+    }
+
+    private void openRecepta(long id) {
+        if (mTwoPane) {
+            Bundle arguments = new Bundle();
+            arguments.putString(ReceptaDetailFragment.ARG_ITEM_ID, String.valueOf(id));
+            ReceptaDetailFragment fragment = new ReceptaDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.recepta_detail_container, fragment)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, ReceptaDetailActivity.class);
+            intent.putExtra(ReceptaDetailFragment.ARG_ITEM_ID, String.valueOf(id));
+            startActivity(intent);
+        }
     }
 
     public class SimpleItemRecyclerViewAdapter
@@ -108,21 +136,7 @@ public class ReceptaListActivity extends AppCompatActivity {
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putString(ReceptaDetailFragment.ARG_ITEM_ID, String.valueOf(holder.mItem.getId()));
-                        ReceptaDetailFragment fragment = new ReceptaDetailFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.recepta_detail_container, fragment)
-                                .commit();
-                    } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, ReceptaDetailActivity.class);
-                        intent.putExtra(ReceptaDetailFragment.ARG_ITEM_ID, String.valueOf(holder.mItem.getId()));
-
-                        context.startActivity(intent);
-                    }
+                    openRecepta(holder.mItem.getId());
                 }
             });
         }
