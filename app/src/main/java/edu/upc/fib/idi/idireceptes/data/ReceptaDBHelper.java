@@ -56,13 +56,95 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_RECEPTA);
         db.execSQL(SQL_CREATE_INGREDIENT_RECEPTA);
 
-        db.insert(ReceptaEntry.TABLE_NAME, null, getRecepta1());
+        //TRUITA
+        db.insert(ReceptaEntry.TABLE_NAME, null, getTruita());
+
+        db.insert(IngredientEntry.TABLE_NAME, null, getOus());
+        db.insert(IngredientEntry.TABLE_NAME, null, getPatates());
+
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacio(getOus(), getTruita()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacio(getPatates(), getTruita()));
+
+
+        //CALDO
+
+        db.insert(ReceptaEntry.TABLE_NAME, null, getCaldo());
+
+        db.insert(IngredientEntry.TABLE_NAME, null, getAigua());
+        db.insert(IngredientEntry.TABLE_NAME, null, getCapDeLluc());
+        db.insert(IngredientEntry.TABLE_NAME, null, getSal());
+
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacio(getAigua(), getCaldo()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacio(getSal(), getCaldo()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacio(getCapDeLluc(), getCaldo()));
+
+
     }
 
-    private ContentValues getRecepta1() {
+    private ContentValues getRelacio(ContentValues ingredient, ContentValues recepta) {
+        ContentValues cv = new ContentValues();
+        cv.put(IngredientsReceptaEntry.COL_ID_INGR, ingredient.getAsInteger(IngredientEntry._ID));
+        cv.put(IngredientsReceptaEntry.COL_ID_RECEPT, recepta.getAsInteger(ReceptaEntry._ID));
+        return cv;
+    }
+
+    private ContentValues getPatates() {
+        ContentValues cv = new ContentValues();
+        cv.put(IngredientEntry.COL_NAME, "Patates");
+        cv.put(IngredientEntry._ID, 2);
+        return cv;
+    }
+
+    private ContentValues getOus() {
+        ContentValues cv = new ContentValues();
+        cv.put(IngredientEntry.COL_NAME, "Ous");
+        cv.put(IngredientEntry._ID, 1);
+        return cv;
+    }
+
+    private ContentValues getAigua() {
+        ContentValues cv = new ContentValues();
+        cv.put(IngredientEntry.COL_NAME, "Aigua");
+        cv.put(IngredientEntry._ID, 3);
+        return cv;
+    }
+
+    private ContentValues getSal() {
+        ContentValues cv = new ContentValues();
+        cv.put(IngredientEntry.COL_NAME, "Sal");
+        cv.put(IngredientEntry._ID, 4);
+        return cv;
+    }
+
+
+    private ContentValues getCapDeRap() {
+        ContentValues cv = new ContentValues();
+        cv.put(IngredientEntry.COL_NAME, "Cap de rap");
+        cv.put(IngredientEntry._ID, 5);
+        return cv;
+    }
+
+    private ContentValues getCapDeLluc() {
+        ContentValues cv = new ContentValues();
+        cv.put(IngredientEntry.COL_NAME, "Cap de lluç");
+        cv.put(IngredientEntry._ID, 6);
+        return cv;
+    }
+
+
+    private ContentValues getTruita() {
         ContentValues cv = new ContentValues();
         cv.put(ReceptaEntry.COL_NAME, "Truita");
         cv.put(ReceptaEntry.COL_DESCR, "Obrir ou en cassola, coure, extreure");
+        cv.put(ReceptaEntry._ID, 1);
+        return cv;
+    }
+
+    private ContentValues getCaldo() {
+        ContentValues cv = new ContentValues();
+        cv.put(ReceptaEntry.COL_NAME, "Caldo de peix");
+        cv.put(ReceptaEntry.COL_DESCR, "Posar aigua, bullir i degustar");
+        cv.put(ReceptaEntry._ID, 2);
         return cv;
     }
 
