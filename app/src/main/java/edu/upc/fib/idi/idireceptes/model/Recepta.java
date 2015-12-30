@@ -9,11 +9,11 @@ import java.util.List;
  */
 public class Recepta  implements Entity{
     private String description;
-    private List<String> ingredients;
+    private List<Ingredient> ingredients;
     private String title;
     private Long id;
 
-    public Recepta(String description, List<String> ingredients, String title, long id) {
+    public Recepta(String description, List<Ingredient> ingredients, String title, long id) {
         this.description = description;
         this.ingredients = ingredients;
         this.title = title;
@@ -32,11 +32,11 @@ public class Recepta  implements Entity{
         this.description = description;
     }
 
-    public List<String> getIngredients() {
+    public List<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<String> ingredients) {
+    public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
 

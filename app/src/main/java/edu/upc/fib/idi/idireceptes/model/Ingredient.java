@@ -1,5 +1,7 @@
 package edu.upc.fib.idi.idireceptes.model;
 
+import java.util.List;
+
 /**
  * Created by casassg on 25/12/15.
  *
@@ -8,6 +10,15 @@ package edu.upc.fib.idi.idireceptes.model;
 public class Ingredient implements Entity{
     private String name;
     private Long id;
+    private List<Long> substituts;
+
+    public List<Long> getSubstituts() {
+        return substituts;
+    }
+
+    public void setSubstituts(List<Long> substituts) {
+        this.substituts = substituts;
+    }
 
     public String getName() {
         return name;

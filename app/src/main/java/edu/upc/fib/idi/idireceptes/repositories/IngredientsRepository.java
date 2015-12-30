@@ -23,7 +23,7 @@ public class IngredientsRepository extends Repository<Ingredient> {
     }
 
     @Override
-    protected Ingredient parseRow(Cursor cursor) {
+    protected Ingredient parseToObject(Cursor cursor) {
         return new Ingredient();
     }
 
@@ -42,20 +42,18 @@ public class IngredientsRepository extends Repository<Ingredient> {
 
     }
 
-    public List<String> getByRecepte(long id) {
+    public List<Ingredient> getByRecepte(long id) {
         SQLiteDatabase db = helper.getReadableDatabase();
         String SQL_SELECT =
-                "SELECT i." + IngredientEntry.COL_NAME +
+                "SELECT i." + IngredientEntry.COL_NAME + ", i." + IngredientEntry._ID +
                         " FROM " + IngredientEntry.TABLE_NAME + " i, " + IngredientsReceptaEntry.TABLE_NAME + " ir" +
                         " WHERE ir." + IngredientsReceptaEntry.COL_ID_INGR + " = i." + IngredientEntry._ID + " AND" +
                         " ir." + IngredientsReceptaEntry.COL_ID_RECEPT + " = ?";
         Cursor cursor = db.rawQuery(SQL_SELECT, new String[]{String.valueOf(id)});
         cursor.moveToFirst();
-        List<String> ret = new ArrayList<>();
+        List<Ingredient> ret = new ArrayList<>();
         while (!cursor.isAfterLast()) {
-            String tmp = cursor.getString(
-                    cursor.getColumnIndex(IngredientEntry.COL_NAME)
-            );
+            Ingredient tmp = parseToObject(cursor);
             ret.add(tmp);
             cursor.moveToNext();
         }

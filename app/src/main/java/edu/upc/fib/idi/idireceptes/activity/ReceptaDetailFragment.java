@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import edu.upc.fib.idi.idireceptes.R;
+import edu.upc.fib.idi.idireceptes.model.Ingredient;
 import edu.upc.fib.idi.idireceptes.model.Recepta;
 import edu.upc.fib.idi.idireceptes.repositories.ReceptaRepository;
 import edu.upc.fib.idi.idireceptes.util.Factory;
@@ -68,8 +69,8 @@ public class ReceptaDetailFragment extends Fragment {
         if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.recepta_description)).setText(mItem.getDescription());
             String ingredients = "";
-            for (String ingredient : mItem.getIngredients()) {
-                ingredients += "- " + ingredient + "\n";
+            for (Ingredient ingredient : mItem.getIngredients()) {
+                ingredients += "- " + ingredient.getName() + "\n";
             }
             if ("".equals(ingredients)) {
                 ingredients = "Sense ingredients";

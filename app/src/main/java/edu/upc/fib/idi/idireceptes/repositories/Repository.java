@@ -82,7 +82,7 @@ public abstract class Repository <T extends Entity>{
 
     private T relationalToObject(Cursor cursor) {
         T ret;
-        ret = parseRow(cursor);
+        ret = parseToObject(cursor);
         long mId = cursor.getLong(
                 cursor.getColumnIndex(BaseEntityColumns._ID)
         );
@@ -114,7 +114,7 @@ public abstract class Repository <T extends Entity>{
         return ret;
     }
 
-    protected abstract T parseRow(Cursor cursor);
+    protected abstract T parseToObject(Cursor cursor);
 
     protected abstract String getTableName();
 

@@ -8,6 +8,7 @@ import java.util.List;
 import edu.upc.fib.idi.idireceptes.data.ReceptaContract;
 import edu.upc.fib.idi.idireceptes.data.ReceptaContract.ReceptaEntry;
 import edu.upc.fib.idi.idireceptes.data.ReceptaDBHelper;
+import edu.upc.fib.idi.idireceptes.model.Ingredient;
 import edu.upc.fib.idi.idireceptes.model.Recepta;
 
 /**
@@ -25,7 +26,7 @@ public class ReceptaRepository extends Repository<Recepta>{
     }
 
     @Override
-    protected Recepta parseRow(Cursor cursor) {
+    protected Recepta parseToObject(Cursor cursor) {
         Recepta recepta = new Recepta();
         String descr = cursor.getString(
                 cursor.getColumnIndex(ReceptaEntry.COL_DESCR)
@@ -34,7 +35,7 @@ public class ReceptaRepository extends Repository<Recepta>{
         long mId = cursor.getLong(
                 cursor.getColumnIndex(ReceptaContract.BaseEntityColumns._ID)
         );
-        List<String> ingredients = ingredientRep.getByRecepte(mId);
+        List<Ingredient> ingredients = ingredientRep.getByRecepte(mId);
         recepta.setIngredients(ingredients);
         return recepta;
     }
