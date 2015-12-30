@@ -42,20 +42,10 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
                 IngredientEntry._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 IngredientEntry.COL_NAME + " TEXT NOT NULL, " +
                 "UNIQUE ("+IngredientEntry.COL_NAME+") ON CONFLICT REPLACE);";
-        final  String SQL_CREATE_INGREDIENT_RECEPTA = "CREATE TABLE " + IngredientsReceptaEntry.TABLE_NAME+" ("+
-                IngredientsReceptaEntry._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                IngredientsReceptaEntry.COL_ID_INGR + " INTEGER NOT NULL, "+
-                IngredientsReceptaEntry.COL_ID_RECEPT + " INTEGER NOT NULL, "+
-                "UNIQUE ("+IngredientsReceptaEntry.COL_ID_INGR+","+IngredientsReceptaEntry.COL_ID_RECEPT+") ON CONFLICT REPLACE," +
-                " FOREIGN KEY (" + IngredientsReceptaEntry.COL_ID_INGR+ ") REFERENCES " +
-                IngredientEntry.TABLE_NAME + " (" + IngredientEntry._ID+ "), " +
-                " FOREIGN KEY (" + IngredientsReceptaEntry.COL_ID_RECEPT+ ") REFERENCES " +
-                ReceptaEntry.TABLE_NAME + " (" + ReceptaEntry._ID+ "));";
 
-
-        db.execSQL(SQL_CREATE_INGREDIENT);
-        db.execSQL(SQL_CREATE_RECEPTA);
-        db.execSQL(SQL_CREATE_INGREDIENT_RECEPTA);
+        db.execSQL(IngredientEntry.SQL_CREATE_TABLE);
+        db.execSQL(ReceptaEntry.SQL_CREATE_TABLE);
+        db.execSQL(IngredientsReceptaEntry.SQL_CREATE_TABLE);
 
         //TRUITA
         db.insert(ReceptaEntry.TABLE_NAME, null, getTruita());
@@ -84,22 +74,11 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
     }
 
     private void createSubstitut(SQLiteDatabase db) {
-        final String CREATE_SUBSTITUT = "CREATE TABLE " + IngredientSubstitut.TABLE_NAME + " ( " +
-                IngredientSubstitut._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                IngredientSubstitut.COL_ID_ING_PRIMARI + " INTEGER NOT NULL, " +
-                IngredientSubstitut.COL_ID_ING_SUBSTITUTIU + " INTEGER NOT NULL, " +
-                IngredientSubstitut.COL_ID_RECEPT + " INTEGER NOT NULL, " +
-                "UNIQUE (" + IngredientSubstitut.COL_ID_ING_SUBSTITUTIU + "," + IngredientSubstitut.COL_ID_ING_PRIMARI + "," + IngredientSubstitut.COL_ID_RECEPT + ") ON CONFLICT REPLACE," +
-                " FOREIGN KEY (" + IngredientSubstitut.COL_ID_ING_PRIMARI + ") REFERENCES " +
-                ReceptaEntry.TABLE_NAME + " (" + ReceptaEntry._ID + "), " +
-                " FOREIGN KEY (" + IngredientSubstitut.COL_ID_ING_SUBSTITUTIU + ") REFERENCES " +
-                ReceptaEntry.TABLE_NAME + " (" + ReceptaEntry._ID + "), " +
-                " FOREIGN KEY (" + IngredientSubstitut.COL_ID_RECEPT + ") REFERENCES " +
-                ReceptaEntry.TABLE_NAME + " (" + ReceptaEntry._ID + "));";
+
 
         db.insert(IngredientEntry.TABLE_NAME, null, getCapDeRap());
 
-        db.execSQL(CREATE_SUBSTITUT);
+        db.execSQL(IngredientSubstitut.SQL_CREATE_TABLE);
 
 
         ContentValues cv = getRelacioSubstitutio(getCaldo(), getCapDeLluc(), getCapDeRap());
