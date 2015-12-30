@@ -7,7 +7,7 @@ package edu.upc.fib.idi.idireceptes.model;
  */
 public class Ingredient implements Entity{
     private String name;
-    private long id;
+    private Long id;
 
     public String getName() {
         return name;
@@ -17,12 +17,12 @@ public class Ingredient implements Entity{
         this.name = name;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    @Override
+    public Long getId() {
+        return id;
     }
 
-    @Override
-    public long getId() {
-        return id;
+    public void setId(long id) {
+        this.id = id;
     }
 }

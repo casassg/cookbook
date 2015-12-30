@@ -103,4 +103,6 @@
     <string name="input_titol">Titol</string>
     <string name="input_descripcio">Descripció</string>
     <string name="input_not_completed">Falta completar la recepta</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="descripcio">Descripció</string>
 </resources>

@@ -47,7 +47,7 @@ public class InputActivity extends AppCompatActivity {
         }
         Recepta recepta = new Recepta();
         recepta.setDescription(description);
-        recepta.setTitle(title);
+        recepta.setName(title);
 
         ReceptaRepository repository = Factory.getInstanceReceptaRepository(getApplicationContext());
         long id = repository.insert(recepta);

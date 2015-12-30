@@ -12,8 +12,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:orientation="vertical">
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_marginRight="@dimen/text_margin"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/text_margin"
+        android:paddingTop="@dimen/text_margin">
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

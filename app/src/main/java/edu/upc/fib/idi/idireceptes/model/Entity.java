@@ -6,7 +6,11 @@ package edu.upc.fib.idi.idireceptes.model;
  * @author casassg
  */
 public interface Entity {
-    long getId();
+    Long getId();
 
     void setId(long id);
+
+    String getName();
+
+    void setName(String nom);
 }

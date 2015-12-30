@@ -9,15 +9,17 @@ import android.provider.BaseColumns;
  */
 public class ReceptaContract {
 
-    public class ReceptaEntry implements BaseColumns {
-        public static final String TABLE_NAME="receptes";
-        public static final String COL_DESCR="descr";
-        public static final String COL_NAME="name";
+    public interface BaseEntityColumns extends BaseColumns {
+        String COL_NAME = "name";
     }
 
-    public  class IngredientEntry implements BaseColumns {
+    public class ReceptaEntry implements BaseEntityColumns {
+        public static final String TABLE_NAME="receptes";
+        public static final String COL_DESCR="descr";
+    }
+
+    public class IngredientEntry implements BaseEntityColumns {
         public static final String TABLE_NAME="ingredients";
-        public static final String COL_NAME="name";
     }
 
     public class IngredientsReceptaEntry implements BaseColumns {

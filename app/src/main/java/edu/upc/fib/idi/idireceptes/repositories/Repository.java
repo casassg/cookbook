@@ -5,10 +5,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.upc.fib.idi.idireceptes.data.ReceptaContract.BaseEntityColumns;
 import edu.upc.fib.idi.idireceptes.model.Entity;
 
 /**
@@ -18,7 +20,7 @@ import edu.upc.fib.idi.idireceptes.model.Entity;
  */
 public abstract class Repository <T extends Entity>{
 
-    private final SQLiteOpenHelper helper;
+    protected final SQLiteOpenHelper helper;
 
     public Repository(SQLiteOpenHelper helper){
         this.helper = helper;
@@ -27,11 +29,19 @@ public abstract class Repository <T extends Entity>{
     public long insert(T object) {
         checkInsert(object);
         SQLiteDatabase db = helper.getWritableDatabase();
-        ContentValues values = parseToContentValues(object);
+        ContentValues values = objectToRelational(object);
         long id = db.insert(getTableName(),null,values);
         object.setId(id);
         db.close();
         return id;
+    }
+
+    @NonNull
+    private ContentValues objectToRelational(T object) {
+        ContentValues values = parseToContentValues(object);
+        values.put(BaseEntityColumns.COL_NAME, object.getName());
+        values.put(BaseEntityColumns._ID, object.getId());
+        return values;
     }
 
     public T get(long id){
@@ -45,11 +55,43 @@ public abstract class Repository <T extends Entity>{
         T ret = null;
         cursor.moveToFirst();
         if(!cursor.isAfterLast()) {
-            ret = parseRow(cursor);
+            ret = relationalToObject(cursor);
         }
         cursor.close();
         db.close();
         return  ret;
+    }
+
+    public T get(String name) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.query(
+                getTableName(),
+                null,
+                BaseEntityColumns.COL_NAME + " = ?",
+                new String[]{name}, null, null, null
+        );
+        T ret = null;
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            ret = relationalToObject(cursor);
+        }
+        cursor.close();
+        db.close();
+        return ret;
+    }
+
+    private T relationalToObject(Cursor cursor) {
+        T ret;
+        ret = parseRow(cursor);
+        long mId = cursor.getLong(
+                cursor.getColumnIndex(BaseEntityColumns._ID)
+        );
+        ret.setId(mId);
+        String name = cursor.getString(
+                cursor.getColumnIndex(BaseEntityColumns.COL_NAME)
+        );
+        ret.setName(name);
+        return ret;
     }
 
     public List<T> getAll() {
@@ -63,7 +105,7 @@ public abstract class Repository <T extends Entity>{
         List<T> ret = new ArrayList<>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            T tmp = parseRow(cursor);
+            T tmp = relationalToObject(cursor);
             ret.add(tmp);
             cursor.moveToNext();
         }

@@ -3,6 +3,9 @@ package edu.upc.fib.idi.idireceptes.repositories;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.List;
+
+import edu.upc.fib.idi.idireceptes.data.ReceptaContract;
 import edu.upc.fib.idi.idireceptes.data.ReceptaContract.ReceptaEntry;
 import edu.upc.fib.idi.idireceptes.data.ReceptaDBHelper;
 import edu.upc.fib.idi.idireceptes.model.Recepta;
@@ -14,25 +17,25 @@ import edu.upc.fib.idi.idireceptes.model.Recepta;
  */
 public class ReceptaRepository extends Repository<Recepta>{
 
-    public ReceptaRepository(ReceptaDBHelper helper) {
+    private final IngredientsRepository ingredientRep;
+
+    public ReceptaRepository(ReceptaDBHelper helper, IngredientsRepository ingre) {
         super(helper);
+        ingredientRep = ingre;
     }
 
     @Override
     protected Recepta parseRow(Cursor cursor) {
         Recepta recepta = new Recepta();
-        String name = cursor.getString(
-                cursor.getColumnIndex(ReceptaEntry.COL_NAME)
-        );
         String descr = cursor.getString(
                 cursor.getColumnIndex(ReceptaEntry.COL_DESCR)
         );
-        long id = cursor.getLong(
-                cursor.getColumnIndex(ReceptaEntry._ID)
-        );
-        recepta.setTitle(name);
         recepta.setDescription(descr);
-        recepta.setId(id);
+        long mId = cursor.getLong(
+                cursor.getColumnIndex(ReceptaContract.BaseEntityColumns._ID)
+        );
+        List<String> ingredients = ingredientRep.getByRecepte(mId);
+        recepta.setIngredients(ingredients);
         return recepta;
     }
 
@@ -44,8 +47,6 @@ public class ReceptaRepository extends Repository<Recepta>{
     @Override
     protected ContentValues parseToContentValues(Recepta object) {
         ContentValues values = new ContentValues();
-        values.put(ReceptaEntry.COL_DESCR,object.getDescription());
-        values.put(ReceptaEntry.COL_NAME,object.getTitle());
         values.put(ReceptaEntry.COL_DESCR,object.getDescription());
         return values;
     }
