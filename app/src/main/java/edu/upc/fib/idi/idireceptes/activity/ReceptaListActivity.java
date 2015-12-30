@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import edu.upc.fib.idi.idireceptes.R;
+import edu.upc.fib.idi.idireceptes.activity.fragment.ReceptaDetailFragment;
 import edu.upc.fib.idi.idireceptes.model.Recepta;
 import edu.upc.fib.idi.idireceptes.repositories.ReceptaRepository;
 import edu.upc.fib.idi.idireceptes.util.Factory;

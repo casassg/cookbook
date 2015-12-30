@@ -22,7 +22,7 @@ public final class Factory {
         return new ReceptaDBHelper(context);
     }
 
-    private static IngredientsRepository getInstanceIngredientsRepositori(Context context) {
+    public static IngredientsRepository getInstanceIngredientsRepositori(Context context) {
         return new IngredientsRepository(getHelper(context));
     }
 }

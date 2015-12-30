@@ -1,4 +1,4 @@
-package edu.upc.fib.idi.idireceptes.activity;
+package edu.upc.fib.idi.idireceptes.activity.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import edu.upc.fib.idi.idireceptes.R;
+import edu.upc.fib.idi.idireceptes.activity.ReceptaDetailActivity;
+import edu.upc.fib.idi.idireceptes.activity.ReceptaListActivity;
 import edu.upc.fib.idi.idireceptes.model.Ingredient;
 import edu.upc.fib.idi.idireceptes.model.Recepta;
 import edu.upc.fib.idi.idireceptes.repositories.ReceptaRepository;

@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import edu.upc.fib.idi.idireceptes.R;
+import edu.upc.fib.idi.idireceptes.activity.fragment.ReceptaDetailFragment;
 
 /**
  * An activity representing a single Recepta detail screen. This
