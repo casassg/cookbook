@@ -10,13 +10,13 @@ import java.util.List;
 public class Ingredient implements Entity{
     private String name;
     private Long id;
-    private List<Long> substituts;
+    private List<Ingredient> substituts;
 
-    public List<Long> getSubstituts() {
+    public List<Ingredient> getSubstituts() {
         return substituts;
     }
 
-    public void setSubstituts(List<Long> substituts) {
+    public void setSubstituts(List<Ingredient> substituts) {
         this.substituts = substituts;
     }
 

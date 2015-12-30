@@ -80,7 +80,7 @@ public abstract class Repository <T extends Entity>{
         return ret;
     }
 
-    private T relationalToObject(Cursor cursor) {
+    protected T relationalToObject(Cursor cursor) {
         T ret;
         ret = parseToObject(cursor);
         long mId = cursor.getLong(

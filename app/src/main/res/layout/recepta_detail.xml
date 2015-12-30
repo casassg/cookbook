@@ -18,14 +18,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textIsSelectable="false" />
 
-    <ExpandableListView
-        android:id="@+id/recepta_ingredients"
-        style="?android:attr/textAppearanceLarge"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <TextView
-
+        android:id="@+id/recepta_ingredients"
         style="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

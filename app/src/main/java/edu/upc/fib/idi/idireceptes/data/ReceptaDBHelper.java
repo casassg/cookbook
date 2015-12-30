@@ -97,7 +97,11 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + IngredientSubstitut.COL_ID_RECEPT + ") REFERENCES " +
                 ReceptaEntry.TABLE_NAME + " (" + ReceptaEntry._ID + "));";
 
+        db.insert(IngredientEntry.TABLE_NAME, null, getCapDeRap());
+
         db.execSQL(CREATE_SUBSTITUT);
+
+
         ContentValues cv = getRelacioSubstitutio(getCaldo(), getCapDeLluc(), getCapDeRap());
         db.insert(IngredientSubstitut.TABLE_NAME, null, cv);
 

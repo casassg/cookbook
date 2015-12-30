@@ -5,7 +5,6 @@ import android.database.Cursor;
 
 import java.util.List;
 
-import edu.upc.fib.idi.idireceptes.data.ReceptaContract;
 import edu.upc.fib.idi.idireceptes.data.ReceptaContract.ReceptaEntry;
 import edu.upc.fib.idi.idireceptes.data.ReceptaDBHelper;
 import edu.upc.fib.idi.idireceptes.model.Ingredient;
@@ -32,10 +31,12 @@ public class ReceptaRepository extends Repository<Recepta>{
                 cursor.getColumnIndex(ReceptaEntry.COL_DESCR)
         );
         recepta.setDescription(descr);
-        long mId = cursor.getLong(
-                cursor.getColumnIndex(ReceptaContract.BaseEntityColumns._ID)
-        );
-        List<Ingredient> ingredients = ingredientRep.getByRecepte(mId);
+        return recepta;
+    }
+
+    public Recepta getAmpliated(Long id) {
+        Recepta recepta = get(id);
+        List<Ingredient> ingredients = ingredientRep.getByRecepte(id);
         recepta.setIngredients(ingredients);
         return recepta;
     }

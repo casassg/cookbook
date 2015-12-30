@@ -105,4 +105,6 @@
     <string name="input_not_completed">Falta completar la recepta</string>
     <string name="ingredients">Ingredients</string>
     <string name="descripcio">Descripció</string>
+    <string name="title_missing">Introdueixi un titol per la recepta</string>
+    <string name="description_missing">Introdueixi una descripció per la recepta</string>
 </resources>

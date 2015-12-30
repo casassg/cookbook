@@ -41,8 +41,11 @@ public class InputActivity extends AppCompatActivity {
         String description = editDescripcio.getText().toString();
         String title = editTitol.getText().toString();
 
-        if ("".equals(description) || "".equals(title)) {
-            Snackbar.make(view, R.string.input_not_completed, Snackbar.LENGTH_SHORT).show();
+        if ("".equals(title)) {
+            Snackbar.make(view, R.string.title_missing, Snackbar.LENGTH_SHORT).show();
+            return;
+        } else if ("".equals(description)) {
+            Snackbar.make(view, R.string.description_missing, Snackbar.LENGTH_SHORT).show();
             return;
         }
         Recepta recepta = new Recepta();

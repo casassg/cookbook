@@ -48,12 +48,10 @@ public class ReceptaDetailFragment extends Fragment {
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             ReceptaRepository repository = Factory.getInstanceReceptaRepository(getActivity().getApplicationContext());
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
+
             String id = getArguments().getString(ARG_ITEM_ID);
             assert id != null;
-            mItem = repository.get(Long.valueOf(id));
+            mItem = repository.getAmpliated(Long.valueOf(id));
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
@@ -73,11 +71,14 @@ public class ReceptaDetailFragment extends Fragment {
             String ingredients = "";
             for (Ingredient ingredient : mItem.getIngredients()) {
                 ingredients += "- " + ingredient.getName() + "\n";
+                for (Ingredient substitut : ingredient.getSubstituts()) {
+                    ingredients += "\t\to " + substitut.getName() + "\n";
+                }
             }
             if ("".equals(ingredients)) {
                 ingredients = "Sense ingredients";
             }
-//            ((TextView) rootView.findViewById(R.id.recepta_ingredients)).setText(ingredients);
+            ((TextView) rootView.findViewById(R.id.recepta_ingredients)).setText(ingredients);
         }
 
         return rootView;
