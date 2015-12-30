@@ -27,4 +27,13 @@ public class ReceptaContract {
         public static final String COL_ID_INGR="id_ingr";
         public static final String COL_ID_RECEPT="id_recept";
     }
+
+    public class IngredientSubstitut implements BaseColumns {
+        public static final String TABLE_NAME = "ingredientsubstitut";
+        public static final String COL_ID_ING_PRIMARI = "id_ingredient_primari";
+        public static final String COL_ID_ING_SUBSTITUTIU = "id_ingredient_subtitutiu";
+        public static final String COL_ID_RECEPT = "id_recept";
+
+
+    }
 }

@@ -12,6 +12,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import edu.upc.fib.idi.idireceptes.data.ReceptaContract.IngredientEntry;
+import edu.upc.fib.idi.idireceptes.data.ReceptaContract.IngredientSubstitut;
 import edu.upc.fib.idi.idireceptes.data.ReceptaContract.IngredientsReceptaEntry;
 import edu.upc.fib.idi.idireceptes.data.ReceptaContract.ReceptaEntry;
 
@@ -24,7 +25,7 @@ import edu.upc.fib.idi.idireceptes.data.ReceptaContract.ReceptaEntry;
 public class ReceptaDBHelper extends SQLiteOpenHelper {
 
     static final String DATABASE_NAME = "recepta.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public ReceptaDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -62,8 +63,8 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
         db.insert(IngredientEntry.TABLE_NAME, null, getOus());
         db.insert(IngredientEntry.TABLE_NAME, null, getPatates());
 
-        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacio(getOus(), getTruita()));
-        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacio(getPatates(), getTruita()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getOus(), getTruita()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getPatates(), getTruita()));
 
 
         //CALDO
@@ -74,14 +75,43 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
         db.insert(IngredientEntry.TABLE_NAME, null, getCapDeLluc());
         db.insert(IngredientEntry.TABLE_NAME, null, getSal());
 
-        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacio(getAigua(), getCaldo()));
-        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacio(getSal(), getCaldo()));
-        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacio(getCapDeLluc(), getCaldo()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getAigua(), getCaldo()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getSal(), getCaldo()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getCapDeLluc(), getCaldo()));
 
+        createSubstitut(db);
 
     }
 
-    private ContentValues getRelacio(ContentValues ingredient, ContentValues recepta) {
+    private void createSubstitut(SQLiteDatabase db) {
+        final String CREATE_SUBSTITUT = "CREATE TABLE " + IngredientSubstitut.TABLE_NAME + " ( " +
+                IngredientSubstitut._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                IngredientSubstitut.COL_ID_ING_PRIMARI + " INTEGER NOT NULL, " +
+                IngredientSubstitut.COL_ID_ING_SUBSTITUTIU + " INTEGER NOT NULL, " +
+                IngredientSubstitut.COL_ID_RECEPT + " INTEGER NOT NULL, " +
+                "UNIQUE (" + IngredientSubstitut.COL_ID_ING_SUBSTITUTIU + "," + IngredientSubstitut.COL_ID_ING_PRIMARI + "," + IngredientSubstitut.COL_ID_RECEPT + ") ON CONFLICT REPLACE," +
+                " FOREIGN KEY (" + IngredientSubstitut.COL_ID_ING_PRIMARI + ") REFERENCES " +
+                ReceptaEntry.TABLE_NAME + " (" + ReceptaEntry._ID + "), " +
+                " FOREIGN KEY (" + IngredientSubstitut.COL_ID_ING_SUBSTITUTIU + ") REFERENCES " +
+                ReceptaEntry.TABLE_NAME + " (" + ReceptaEntry._ID + "), " +
+                " FOREIGN KEY (" + IngredientSubstitut.COL_ID_RECEPT + ") REFERENCES " +
+                ReceptaEntry.TABLE_NAME + " (" + ReceptaEntry._ID + "));";
+
+        db.execSQL(CREATE_SUBSTITUT);
+        ContentValues cv = getRelacioSubstitutio(getCaldo(), getCapDeLluc(), getCapDeRap());
+        db.insert(IngredientSubstitut.TABLE_NAME, null, cv);
+
+    }
+
+    private ContentValues getRelacioSubstitutio(ContentValues recepta, ContentValues ingre_primari, ContentValues ingre_substitut) {
+        ContentValues cv = new ContentValues();
+        cv.put(IngredientSubstitut.COL_ID_RECEPT, recepta.getAsInteger(ReceptaEntry._ID));
+        cv.put(IngredientSubstitut.COL_ID_ING_PRIMARI, ingre_primari.getAsInteger(IngredientEntry._ID));
+        cv.put(IngredientSubstitut.COL_ID_ING_SUBSTITUTIU, ingre_substitut.getAsInteger(IngredientEntry._ID));
+        return cv;
+    }
+
+    private ContentValues getRelacioIngredientRecepta(ContentValues ingredient, ContentValues recepta) {
         ContentValues cv = new ContentValues();
         cv.put(IngredientsReceptaEntry.COL_ID_INGR, ingredient.getAsInteger(IngredientEntry._ID));
         cv.put(IngredientsReceptaEntry.COL_ID_RECEPT, recepta.getAsInteger(ReceptaEntry._ID));
@@ -151,7 +181,9 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //TODO: Implement upgrade
+        if (oldVersion == 1) {
+            createSubstitut(db);
+        }
 
     }
 
