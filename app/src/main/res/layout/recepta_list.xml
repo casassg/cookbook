@@ -6,6 +6,7 @@
     android:name="edu.upc.fib.idi.idireceptes.activity.ReceptaListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     app:layoutManager="LinearLayoutManager"
     tools:context="edu.upc.fib.idi.idireceptes.activity.ReceptaListActivity"
     tools:listitem="@layout/recepta_list_content" />

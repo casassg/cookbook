@@ -55,4 +55,8 @@ public class Recepta  implements Entity{
     public void setId(long id) {
         this.id = id;
     }
+
+    public String getImageFilename() {
+        return "recepta_" + id + ".jpg";
+    }
 }

@@ -2,12 +2,17 @@ package edu.upc.fib.idi.idireceptes.activity.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
 
 import edu.upc.fib.idi.idireceptes.R;
 import edu.upc.fib.idi.idireceptes.activity.ReceptaDetailActivity;
@@ -16,6 +21,7 @@ import edu.upc.fib.idi.idireceptes.model.Ingredient;
 import edu.upc.fib.idi.idireceptes.model.Recepta;
 import edu.upc.fib.idi.idireceptes.repositories.ReceptaRepository;
 import edu.upc.fib.idi.idireceptes.util.Factory;
+import edu.upc.fib.idi.idireceptes.util.ImageTreat;
 
 /**
  * A fragment representing a single Recepta detail screen.
@@ -24,12 +30,13 @@ import edu.upc.fib.idi.idireceptes.util.Factory;
  * on handsets.
  */
 public class ReceptaDetailFragment extends Fragment {
+
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
-
+    private static final String TAG = ReceptaDetailFragment.class.getSimpleName();
     /**
      * The dummy content this fragment is presenting.
      */
@@ -53,11 +60,17 @@ public class ReceptaDetailFragment extends Fragment {
             assert id != null;
             mItem = repository.getAmpliated(Long.valueOf(id));
 
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.getName());
-            }
+
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Activity activity = this.getActivity();
+        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+        if (appBarLayout != null) {
+            appBarLayout.setTitle(mItem.getName());
         }
     }
 
@@ -78,9 +91,21 @@ public class ReceptaDetailFragment extends Fragment {
             if ("".equals(ingredients)) {
                 ingredients = "Sense ingredients";
             }
+            setImage((ImageView) getActivity().findViewById(R.id.imageView));
+
             ((TextView) rootView.findViewById(R.id.recepta_ingredients)).setText(ingredients);
         }
 
         return rootView;
+    }
+
+    private void setImage(ImageView imageView) {
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File image = new File(storageDir, mItem.getImageFilename());
+        if (image.exists()) {
+            new ImageTreat(image.getAbsolutePath(), imageView, 10000, 1000, true);
+        } else {
+            Log.w(TAG, "No image found");
+        }
     }
 }

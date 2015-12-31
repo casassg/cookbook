@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import edu.upc.fib.idi.idireceptes.activity.fragment.ReceptaDetailFragment;
 import edu.upc.fib.idi.idireceptes.model.Recepta;
 import edu.upc.fib.idi.idireceptes.repositories.ReceptaRepository;
 import edu.upc.fib.idi.idireceptes.util.Factory;
+import edu.upc.fib.idi.idireceptes.util.ImageTreat;
 
 /**
  * An activity representing a list of Receptes. This activity
@@ -60,9 +62,9 @@ public class ReceptaListActivity extends AppCompatActivity {
             }
         });
 
-        View recyclerView = findViewById(R.id.recepta_list);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recepta_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        setupRecyclerView(recyclerView);
 
         if (findViewById(R.id.recepta_detail_container) != null) {
             // The detail container view will be present only in the
@@ -87,12 +89,13 @@ public class ReceptaListActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        View recyclerView = findViewById(R.id.recepta_list);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recepta_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        recyclerView.swapAdapter(new SimpleItemRecyclerViewAdapter(repository.getAll()), true);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(repository.getAll()));
     }
 
@@ -133,12 +136,27 @@ public class ReceptaListActivity extends AppCompatActivity {
             holder.mItem = mValues.get(position);
             holder.mContentView.setText(mValues.get(position).getName());
 
+            new ImageTreat(
+                    ImageTreat.getAbsolutePathImage(holder.mItem),
+                    holder.imageView,
+                    4000,
+                    200,
+                    false
+            );
+
+
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     openRecepta(holder.mItem.getId());
                 }
             });
+        }
+
+        @Override
+        public void onViewRecycled(ViewHolder holder) {
+            super.onViewRecycled(holder);
+            holder.imageView.setImageDrawable(null);
         }
 
         @Override
@@ -149,12 +167,14 @@ public class ReceptaListActivity extends AppCompatActivity {
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
             public final TextView mContentView;
+            public final ImageView imageView;
             public Recepta mItem;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
                 mContentView = (TextView) view.findViewById(R.id.content);
+                imageView = (ImageView) view.findViewById(R.id.miniatura);
             }
 
             @Override
