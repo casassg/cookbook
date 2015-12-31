@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -34,16 +35,19 @@ public class ReceptaListActivity extends AppCompatActivity {
 
     public static final String ID_RECEPTA = "id_recepta";
     static final int NEW_RECEPTA = 42;
+    private static final String BUNDLE_RECYCLER_LAYOUT = "recycler.layout";
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
     private ReceptaRepository repository;
+    private int itemPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        itemPosition = 0;
         repository = Factory.getInstanceReceptaRepository(getApplicationContext());
 
         setContentView(R.layout.activity_recepta_list);
@@ -73,6 +77,21 @@ public class ReceptaListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recepta_list);
+        itemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recepta_list);
+        recyclerView.scrollToPosition(itemPosition);
+
     }
 
     @Override
