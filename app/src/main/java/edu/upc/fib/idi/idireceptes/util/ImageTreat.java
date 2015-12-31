@@ -2,6 +2,7 @@ package edu.upc.fib.idi.idireceptes.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
@@ -92,7 +93,7 @@ public final class ImageTreat {
 
 
                 } catch (IOException e) {
-                    Log.i(TAG, "No image found");
+                    Log.e(TAG, "No image found");
                 }
 
             }
@@ -106,7 +107,7 @@ public final class ImageTreat {
                 if (imageView != null) {
                     imageView.setImageBitmap(bitmap);
                     if (tint)
-                        imageView.setColorFilter(R.color.primary_material_dark);
+                        imageView.setColorFilter(R.color.primary_material_dark, PorterDuff.Mode.DARKEN);
 
                 }
             } else {
