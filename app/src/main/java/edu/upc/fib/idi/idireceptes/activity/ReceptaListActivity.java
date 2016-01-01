@@ -155,13 +155,7 @@ public class ReceptaListActivity extends AppCompatActivity {
             holder.mItem = mValues.get(position);
             holder.mContentView.setText(mValues.get(position).getName());
 
-            new ImageTreat(
-                    ImageTreat.getAbsolutePathImage(holder.mItem),
-                    holder.imageView,
-                    4000,
-                    200,
-                    false
-            );
+            ImageTreat.setImage(holder.mItem, holder.imageView, false, true);
 
 
             holder.mView.setOnClickListener(new View.OnClickListener() {

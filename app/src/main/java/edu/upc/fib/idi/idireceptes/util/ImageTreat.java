@@ -3,7 +3,6 @@ package edu.upc.fib.idi.idireceptes.util;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
-import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
@@ -12,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 
 import edu.upc.fib.idi.idireceptes.R;
 import edu.upc.fib.idi.idireceptes.model.Recepta;
@@ -26,95 +24,126 @@ public final class ImageTreat {
 
     public static final String TAG = ImageTreat.class.getSimpleName();
 
-    public ImageTreat(String filePath, ImageView imageView, int defaultWidth, int defaultHeight, boolean isTinted) {
-        BitmapWorkerTask worker = new BitmapWorkerTask(imageView, defaultWidth, defaultHeight, isTinted);
-        worker.execute(filePath);
-    }
-
     public static String getAbsolutePathImage(Recepta recepta) {
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = new File(storageDir, recepta.getImageFilename());
         return image.getAbsolutePath();
     }
 
-    public static boolean hasImage(Recepta recepta) {
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File image = new File(storageDir, recepta.getImageFilename());
+    public static void setImage(Recepta recepta, ImageView imageView, boolean needsToBeTinted, boolean small) {
+        String path = getAbsolutePathImage(recepta);
+        setImage(imageView, needsToBeTinted, path, small);
+
+    }
+
+    public static void setImage(ImageView imageView, boolean needsToBeTinted, String path, boolean small) {
+        if (hasImage(path)) {
+            BitmapFactory.Options ops = new BitmapFactory.Options();
+            ops.inSampleSize = 1;
+            if (small) {
+                ops.inSampleSize = 3;
+            }
+            Bitmap bm = BitmapFactory.decodeFile(path, ops);
+            imageView.setImageBitmap(bm);
+            if (needsToBeTinted)
+                imageView.setColorFilter(R.color.primary_material_dark, PorterDuff.Mode.OVERLAY);
+
+        } else {
+            imageView.setImageResource(R.drawable.dummy);
+        }
+    }
+
+    public static boolean hasImage(String path) {
+        File image = new File(path);
         return image.exists();
     }
 
-    class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
 
-        private final WeakReference<ImageView> imageViewWeakReference;
-        private final int width;
-        private final int height;
-        private boolean tint;
+    public static Bitmap getBitmap(String path) {
 
-        public BitmapWorkerTask(ImageView imageView, int width, int height, boolean tint) {
-            this.tint = tint;
-            int defHeight;
-            int defWidth;
-            defWidth = imageView.getWidth();
-            if (defWidth == 0) {
-                defWidth = width;
+        InputStream in = null;
+        try {
+            final int IMAGE_MAX_SIZE = 120000; // 1.2MP
+            in = new FileInputStream(new File(path));
+
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(in, null, o);
+            in.close();
+
+
+            int scale = 1;
+            while ((o.outWidth * o.outHeight) * (1 / Math.pow(scale, 2)) >
+                    IMAGE_MAX_SIZE) {
+                scale++;
             }
-            this.width = defWidth;
-            defHeight = imageView.getHeight();
-            if (defHeight == 0) {
-                defHeight = height;
+            Log.d(TAG, "scale = " + scale + ", orig-width: " + o.outWidth + ", orig-height: " + o.outHeight);
+
+            Bitmap b = null;
+            in = new FileInputStream(new File(path));
+            if (scale > 1) {
+                scale--;
+                // scale to max possible inSampleSize that still yields an image
+                // larger than target
+                o = new BitmapFactory.Options();
+                o.inSampleSize = scale;
+                b = BitmapFactory.decodeStream(in, null, o);
+
+                // resize to desired dimensions
+                int height = b.getHeight();
+                int width = b.getWidth();
+                Log.d(TAG, "1th scale operation dimenions - width: " + width + ", height: " + height);
+
+                double y = Math.sqrt(IMAGE_MAX_SIZE
+                        / (((double) width) / height));
+                double x = (y / height) * width;
+
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(b, (int) x,
+                        (int) y, true);
+                b.recycle();
+                b = scaledBitmap;
+
+                System.gc();
+            } else {
+                b = BitmapFactory.decodeStream(in);
             }
+            in.close();
 
-            this.height = defHeight;
-            imageViewWeakReference = new WeakReference<>(imageView);
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            if (params.length > 0) {
-                String path = params[0];
-                File f = new File(path);
-                if (!f.exists()) {
-                    return null;
-                }
-                try {
-                    InputStream in = new FileInputStream(path);
-                    BitmapFactory.Options ops = new BitmapFactory.Options();
-                    ops.inJustDecodeBounds = true;
-                    BitmapFactory.decodeStream(in, null, ops);
-                    in.close();
-                    int inWidth = ops.outWidth;
-                    int inHeight = ops.outHeight;
-                    in = new FileInputStream(path);
-                    ops = new BitmapFactory.Options();
-                    ops.inSampleSize = Math.max(inWidth / width, inHeight / height);
-
-
-                    return BitmapFactory.decodeStream(in, null, ops);
-
-
-                } catch (IOException e) {
-                    Log.e(TAG, "No image found");
-                }
-
-            }
+            Log.d(TAG, "bitmap size - width: " + b.getWidth() + ", height: " +
+                    b.getHeight());
+            return b;
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage(), e);
             return null;
         }
+    }
 
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            final ImageView imageView = imageViewWeakReference.get();
-            if (bitmap != null) {
-                if (imageView != null) {
-                    imageView.setImageBitmap(bitmap);
-                    if (tint)
-                        imageView.setColorFilter(R.color.primary_material_dark, PorterDuff.Mode.DARKEN);
-
-                }
-            } else {
-                imageView.setImageResource(R.drawable.dummy);
+    public static String saveImageRecepta(Recepta recepta, String photoPath) {
+        if (photoPath != null) {
+            File f = new File(photoPath);
+            if (f.exists()) {
+                String name = recepta.getImageFilename();
+                String path = photoPath;
+                String finalPath = renameFile(name, path);
+                return finalPath;
             }
         }
+        return "";
+    }
 
+    private static String renameFile(String name, String path) {
+        File from = new File(path);
+        File directory = from.getParentFile();
+        File to = new File(directory, name);
+        if (!from.renameTo(to)) {
+            Log.e(TAG, "Could not rename file");
+        }
+        return to.getAbsolutePath();
+    }
 
+    public static boolean hasImage(Recepta mItem) {
+        String path = getAbsolutePathImage(mItem);
+        return hasImage(path);
     }
 }

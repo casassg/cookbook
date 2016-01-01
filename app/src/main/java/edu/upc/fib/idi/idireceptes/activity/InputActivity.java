@@ -2,6 +2,7 @@ package edu.upc.fib.idi.idireceptes.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import edu.upc.fib.idi.idireceptes.R;
@@ -75,9 +77,9 @@ public class InputActivity extends AppCompatActivity {
         long id = repository.insert(recepta);
 
         recepta.setId(id);
-        String name = recepta.getImageFilename();
-        String path = this.mCurrentPhotoPath;
-        renameFile(name, path);
+        String photoPath = this.mCurrentPhotoPath;
+        String finalPath = ImageTreat.saveImageRecepta(recepta, photoPath);
+        galleryAddPic(finalPath);
 
         Intent intent = new Intent(getApplicationContext(), ReceptaListActivity.class);
         intent.putExtra(ReceptaListActivity.ID_RECEPTA, id);
@@ -87,24 +89,16 @@ public class InputActivity extends AppCompatActivity {
 
     }
 
-    private void renameFile(String name, String path) {
-        File from = new File(path);
-        File directory = from.getParentFile();
-        File to = new File(directory, name);
-        if (!from.renameTo(to)) {
-            Log.e(TAG, "Could not rename file");
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PICTURE) {
+
             File f = new File(mCurrentPhotoPath);
             if (f.exists()) {
-                Uri contentUri = Uri.fromFile(f);
-                galleryAddPic(contentUri);
+                saveAndResizeFile(mCurrentPhotoPath);
                 ImageView imageView = (ImageView) findViewById(R.id.imageView);
-                new ImageTreat(f.getAbsolutePath(), imageView, 100000, 1000, true);
+                ImageTreat.setImage(imageView, true, mCurrentPhotoPath, false);
             } else {
                 Log.e(TAG, "Image just disapeared");
             }
@@ -112,11 +106,35 @@ public class InputActivity extends AppCompatActivity {
         }
     }
 
-    private void galleryAddPic(Uri contentUri) {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+    private void saveAndResizeFile(String mCurrentPhotoPath) {
+        Bitmap bmp = ImageTreat.getBitmap(mCurrentPhotoPath);
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(mCurrentPhotoPath);
+            assert bmp != null;
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-        mediaScanIntent.setData(contentUri);
-        sendBroadcast(mediaScanIntent);
+    private void galleryAddPic(String path) {
+        if (path != null && !"".equals(path)) {
+            Uri contentUri = Uri.fromFile(new File(path));
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+
+            mediaScanIntent.setData(contentUri);
+            sendBroadcast(mediaScanIntent);
+        }
     }
 
     @Override
@@ -145,14 +163,13 @@ public class InputActivity extends AppCompatActivity {
                         storageDir
                 );
                 mCurrentPhotoPath = image.getAbsolutePath();
+                takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(image));
+                startActivityForResult(takePicture, REQUEST_TAKE_PICTURE);
             } catch (IOException e) {
                 Log.e(TAG, "Can't create temp image file");
 //                e.printStackTrace();
             }
-            if (image != null) {
-                takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(image));
-                startActivityForResult(takePicture, REQUEST_TAKE_PICTURE);
-            }
+
         }
 
     }

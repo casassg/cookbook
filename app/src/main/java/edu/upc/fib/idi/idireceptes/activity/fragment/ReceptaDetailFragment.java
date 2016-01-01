@@ -2,17 +2,13 @@ package edu.upc.fib.idi.idireceptes.activity.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.io.File;
 
 import edu.upc.fib.idi.idireceptes.R;
 import edu.upc.fib.idi.idireceptes.activity.ReceptaDetailActivity;
@@ -91,21 +87,16 @@ public class ReceptaDetailFragment extends Fragment {
             if ("".equals(ingredients)) {
                 ingredients = "Sense ingredients";
             }
-            setImage((ImageView) getActivity().findViewById(R.id.imageView));
-
             ((TextView) rootView.findViewById(R.id.recepta_ingredients)).setText(ingredients);
+
+            ImageView imageView = (ImageView) getActivity().findViewById(R.id.imageView);
+            if (ImageTreat.hasImage(mItem)) {
+                ImageTreat.setImage(mItem, imageView, true, false);
+            }
+
         }
 
         return rootView;
     }
 
-    private void setImage(ImageView imageView) {
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File image = new File(storageDir, mItem.getImageFilename());
-        if (image.exists()) {
-            new ImageTreat(image.getAbsolutePath(), imageView, 10000, 1000, true);
-        } else {
-            Log.w(TAG, "No image found");
-        }
-    }
 }
