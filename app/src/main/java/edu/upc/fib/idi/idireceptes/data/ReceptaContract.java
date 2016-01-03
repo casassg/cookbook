@@ -18,7 +18,7 @@ public class ReceptaContract {
         public static final String COL_DESCR="descr";
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                _ID + " INTEGER PRIMARY KEY ON CONFLICT REPLACE AUTOINCREMENT, " +
                 COL_DESCR + " TEXT NOT NULL, " +
                 COL_NAME + " TEXT NOT NULL, " +
                 "UNIQUE (" + COL_NAME + ") ON CONFLICT REPLACE);";

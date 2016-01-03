@@ -36,4 +36,9 @@ public class Ingredient implements Entity{
     public void setId(long id) {
         this.id = id;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Ingredient && name != null && name.equals(((Ingredient) o).getName());
+    }
 }

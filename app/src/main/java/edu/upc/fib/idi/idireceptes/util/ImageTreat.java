@@ -78,7 +78,6 @@ public final class ImageTreat {
                     IMAGE_MAX_SIZE) {
                 scale++;
             }
-            Log.d(TAG, "scale = " + scale + ", orig-width: " + o.outWidth + ", orig-height: " + o.outHeight);
 
             Bitmap b = null;
             in = new FileInputStream(new File(path));
@@ -93,7 +92,6 @@ public final class ImageTreat {
                 // resize to desired dimensions
                 int height = b.getHeight();
                 int width = b.getWidth();
-                Log.d(TAG, "1th scale operation dimenions - width: " + width + ", height: " + height);
 
                 double y = Math.sqrt(IMAGE_MAX_SIZE
                         / (((double) width) / height));
@@ -109,9 +107,6 @@ public final class ImageTreat {
                 b = BitmapFactory.decodeStream(in);
             }
             in.close();
-
-            Log.d(TAG, "bitmap size - width: " + b.getWidth() + ", height: " +
-                    b.getHeight());
             return b;
         } catch (IOException e) {
             Log.e(TAG, e.getMessage(), e);
@@ -124,15 +119,13 @@ public final class ImageTreat {
             File f = new File(photoPath);
             if (f.exists()) {
                 String name = recepta.getImageFilename();
-                String path = photoPath;
-                String finalPath = renameFile(name, path);
-                return finalPath;
+                return renameFile(name, photoPath);
             }
         }
         return "";
     }
 
-    private static String renameFile(String name, String path) {
+    public static String renameFile(String name, String path) {
         File from = new File(path);
         File directory = from.getParentFile();
         File to = new File(directory, name);

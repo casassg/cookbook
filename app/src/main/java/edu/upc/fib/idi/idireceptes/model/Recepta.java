@@ -1,5 +1,6 @@
 package edu.upc.fib.idi.idireceptes.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,5 +59,22 @@ public class Recepta  implements Entity{
 
     public String getImageFilename() {
         return "recepta_" + id + ".jpg";
+    }
+
+    public void addIngredient(Ingredient mItem) {
+        if (ingredients == null) {
+            ingredients = new ArrayList<>();
+        }
+        ingredients.add(mItem);
+    }
+
+    public void removeIngredient(Ingredient item) {
+        if (ingredients != null) {
+            ingredients.remove(item);
+        }
+    }
+
+    public boolean hasIngredient(Ingredient mItem) {
+        return ingredients != null && ingredients.contains(mItem);
     }
 }

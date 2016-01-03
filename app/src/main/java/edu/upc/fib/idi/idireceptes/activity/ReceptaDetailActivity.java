@@ -3,7 +3,6 @@ package edu.upc.fib.idi.idireceptes.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +20,8 @@ import edu.upc.fib.idi.idireceptes.activity.fragment.ReceptaDetailFragment;
  */
 public class ReceptaDetailActivity extends AppCompatActivity {
 
+    private String idRecepta;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,12 +29,14 @@ public class ReceptaDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
+        idRecepta = getIntent().getStringExtra(ReceptaDetailFragment.ARG_ITEM_ID);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(getApplicationContext(), InputActivity.class);
+                intent.putExtra(InputActivity.KEY_ID, Long.valueOf(idRecepta));
+                startActivityForResult(intent, ReceptaListActivity.NEW_RECEPTA);
             }
         });
 
@@ -56,7 +59,7 @@ public class ReceptaDetailActivity extends AppCompatActivity {
 
             Bundle arguments = new Bundle();
             arguments.putString(ReceptaDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(ReceptaDetailFragment.ARG_ITEM_ID));
+                    idRecepta);
             ReceptaDetailFragment fragment = new ReceptaDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -73,5 +76,20 @@ public class ReceptaDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ReceptaListActivity.NEW_RECEPTA && resultCode == RESULT_OK) {
+            Bundle arguments = new Bundle();
+            arguments.putString(ReceptaDetailFragment.ARG_ITEM_ID,
+                    idRecepta);
+            ReceptaDetailFragment fragment = new ReceptaDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.recepta_detail_container, fragment)
+                    .commit();
+        }
     }
 }

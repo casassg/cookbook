@@ -3,7 +3,10 @@ package edu.upc.fib.idi.idireceptes.util;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import java.lang.ref.WeakReference;
+
 import edu.upc.fib.idi.idireceptes.data.ReceptaDBHelper;
+import edu.upc.fib.idi.idireceptes.model.Recepta;
 import edu.upc.fib.idi.idireceptes.repositories.IngredientsRepository;
 import edu.upc.fib.idi.idireceptes.repositories.ReceptaRepository;
 
@@ -13,6 +16,8 @@ import edu.upc.fib.idi.idireceptes.repositories.ReceptaRepository;
  * @author casassg
  */
 public final class Factory {
+    public static WeakReference<Recepta> tempRecepta;
+
     public static ReceptaRepository getInstanceReceptaRepository(Context context) {
         return new ReceptaRepository(getHelper(context), getInstanceIngredientsRepositori(context));
     }

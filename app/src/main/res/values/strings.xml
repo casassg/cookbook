@@ -18,4 +18,8 @@
     <string name="descripcio">Descripció</string>
     <string name="title_missing">Introdueixi un titol per la recepta</string>
     <string name="description_missing">Introdueixi una descripció per la recepta</string>
+    <string name="save">Guarda</string>
+    <string name="select_substituts">Elegir substituts</string>
+    <string name="edita_recepta">Edita recepta</string>
+    <string name="select_ingredients">Selecciona ingredients substituts</string>
 </resources>
