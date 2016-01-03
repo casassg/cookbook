@@ -25,7 +25,18 @@
     <string name="action_help">Ajuda</string>
     <string name="action_about">Sobre</string>
     <string name="action_done">Fet</string>
-    <string name="help">Text d\'ajuda de l\'aplicació</string>
+    <string name="help">
+        "Com crear una recepta?\n\n"
+
+        "Iniciem presionant sobre el botó amb un simbol de + a la pagina inicial."
+        "Omplim els camps corresponents, seleccionem els ingredients (i afegim els substituts necessaris) i "
+        "finalment presionem en l'icona de camera per fer una fotografia. Un cop acabem podem premer l'icono "
+        "del disc o el boto de guardar per guardar la recepta\n\n"
+
+        "Com editar una recepta?\n\n"
+
+        "Premer sobre la recepta desitjada en la pantalla inicial. Un cop aparegui la recepta en detall, premer el boto amb un llapís."
+    </string>
     <string name="help_title">Ajuda</string>
     <string name="about">
         "CookBook es una aplicació desenvolupada pensant en la simplicitat. Busca donar una alternativa al conjunt"
