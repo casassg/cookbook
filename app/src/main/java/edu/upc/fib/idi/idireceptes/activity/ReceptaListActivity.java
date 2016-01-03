@@ -9,6 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -55,6 +58,7 @@ public class ReceptaListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
+        toolbar.setNavigationIcon(R.mipmap.ic_logo);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -66,9 +70,18 @@ public class ReceptaListActivity extends AppCompatActivity {
             }
         });
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recepta_list);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recepta_list);
         assert recyclerView != null;
         setupRecyclerView(recyclerView);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.smoothScrollToPosition(0);
+            }
+        });
+
+
 
         if (findViewById(R.id.recepta_detail_container) != null) {
             // The detail container view will be present only in the
@@ -92,6 +105,33 @@ public class ReceptaListActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recepta_list);
         recyclerView.scrollToPosition(itemPosition);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_about:
+                launchTextActivity(TextActivity.ABOUT_TYPE);
+                return true;
+            case R.id.action_help:
+                launchTextActivity(TextActivity.HELP_TYPE);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void launchTextActivity(String textType) {
+        Intent intent = new Intent(this, TextActivity.class);
+        intent.putExtra(TextActivity.TYPE_TEXT_KEY, textType);
+        startActivity(intent);
     }
 
     @Override

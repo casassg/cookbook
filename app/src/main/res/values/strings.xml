@@ -19,7 +19,24 @@
     <string name="title_missing">Introdueixi un titol per la recepta</string>
     <string name="description_missing">Introdueixi una descripció per la recepta</string>
     <string name="save">Guarda</string>
-    <string name="select_substituts">Elegir substituts</string>
+    <string name="select_substituts">Escollir substituts</string>
     <string name="edita_recepta">Edita recepta</string>
     <string name="select_ingredients">Selecciona ingredients substituts</string>
+    <string name="action_help">Ajuda</string>
+    <string name="action_about">Sobre</string>
+    <string name="action_done">Fet</string>
+    <string name="help">Text d\'ajuda de l\'aplicació</string>
+    <string name="help_title">Ajuda</string>
+    <string name="about">
+        "CookBook es una aplicació desenvolupada pensant en la simplicitat. Busca donar una alternativa al conjunt"
+        " d\'aplicacions de receptes que existeix actualment, oferint un disseny net que facilita la interacció.\n\n"
+        "L\'aplicació esta desenvolupada pel projecte de Android que es demana des de l'assignatura de IDI de la FIB."
+        "El desenvolupador és l\'alumne Gerard Casas Saez (gerard.casas.saez@est.fib.upc.edu).\n\n"
+        "Credits pel logo de l\'aplicació:\n chef by Артур Абт from the Noun Project\n\n\n"
+        "Developed with love in Barcelona"
+
+    </string>
+    <string name="about_title">Sobre l\'aplicació</string>
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+
 </resources>
