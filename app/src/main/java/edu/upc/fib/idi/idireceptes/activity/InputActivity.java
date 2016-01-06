@@ -219,7 +219,7 @@ public class InputActivity extends AppCompatActivity implements IngredientsDialo
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mCurrentPhotoPath != null) {
+        if (mCurrentPhotoPath != null && isFinishing()) {
             File f = new File(mCurrentPhotoPath);
             if (f.exists() && !f.delete()) {
                 Log.e(TAG, "Could not delete the temp photo");
@@ -236,7 +236,7 @@ public class InputActivity extends AppCompatActivity implements IngredientsDialo
                 saveAndResizeFile(mCurrentPhotoPath);
                 setImage();
             } else {
-                Log.e(TAG, "Image just disapeared");
+                Log.e(TAG, "Image just disapeared, magic?");
             }
 
         }

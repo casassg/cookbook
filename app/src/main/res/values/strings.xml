@@ -35,7 +35,12 @@
 
         "Com editar una recepta?\n\n"
 
-        "Premer sobre la recepta desitjada en la pantalla inicial. Un cop aparegui la recepta en detall, premer el boto amb un llapís."
+        "Premer sobre la recepta desitjada en la pantalla inicial. Un cop aparegui la recepta en detall, premer el boto amb un llapís.\n\n"
+
+        "Com afegir ingredients substituts?\n\n"
+
+        "En la pantalla de creació o edició de recepta, selecciona una recepta i després selecciona el botó de 'Escollir subtituts'. Seleccionem els ingredients desitjats i premem OK. S'ens mostrarà els ingredients substituts en la pantalla"
+
     </string>
     <string name="help_title">Ajuda</string>
     <string name="about">
