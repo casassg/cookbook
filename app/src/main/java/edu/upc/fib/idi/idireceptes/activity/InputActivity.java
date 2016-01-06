@@ -364,9 +364,13 @@ public class InputActivity extends AppCompatActivity implements IngredientsDialo
                 public void onClick(View v) {
                     DialogFragment dialogFragment = new IngredientsDialogFragment();
                     Bundle bundle = new Bundle();
+
+                    List<String> temp = new ArrayList<>(nomsIngredients);
+                    temp.remove(mItem.getName());
+                    String[] ret = temp.toArray(new String[temp.size()]);
                     bundle.putStringArray(
                             IngredientsDialogFragment.INGREDIENTS_KEY,
-                            nomsIngredients.toArray(new String[nomsIngredients.size()])
+                            ret
                     );
                     if (mSubstituts == null) {
                         mSubstituts = new ArrayList<>();
@@ -412,6 +416,8 @@ public class InputActivity extends AppCompatActivity implements IngredientsDialo
             if (!"".equals(ingredients)) {
                 mSubst.setText(ingredients);
                 mSubst.setVisibility(View.VISIBLE);
+            } else {
+                mSubst.setVisibility(View.GONE);
             }
         }
 
