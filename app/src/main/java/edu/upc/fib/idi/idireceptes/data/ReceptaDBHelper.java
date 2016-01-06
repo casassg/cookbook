@@ -7,6 +7,7 @@ import android.database.MatrixCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
 
     static final String DATABASE_NAME = "recepta.db";
     private static final int DATABASE_VERSION = 2;
+    private long lastId = 7;
 
     public ReceptaDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -33,19 +35,11 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final String SQL_CREATE_RECEPTA = "CREATE TABLE "+ ReceptaEntry.TABLE_NAME+ " ("+
-                ReceptaEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                ReceptaEntry.COL_DESCR+ " TEXT NOT NULL, " +
-                ReceptaEntry.COL_NAME+ " TEXT NOT NULL, " +
-                "UNIQUE ("+ReceptaEntry.COL_NAME+") ON CONFLICT REPLACE);";
-        final String SQL_CREATE_INGREDIENT = "CREATE TABLE " + IngredientEntry.TABLE_NAME+" ("+
-                IngredientEntry._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                IngredientEntry.COL_NAME + " TEXT NOT NULL, " +
-                "UNIQUE ("+IngredientEntry.COL_NAME+") ON CONFLICT REPLACE);";
 
         db.execSQL(IngredientEntry.SQL_CREATE_TABLE);
         db.execSQL(ReceptaEntry.SQL_CREATE_TABLE);
         db.execSQL(IngredientsReceptaEntry.SQL_CREATE_TABLE);
+        db.execSQL(IngredientSubstitut.SQL_CREATE_TABLE);
 
         //TRUITA
         db.insert(ReceptaEntry.TABLE_NAME, null, getTruita());
@@ -62,28 +56,112 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
         db.insert(ReceptaEntry.TABLE_NAME, null, getCaldo());
 
         db.insert(IngredientEntry.TABLE_NAME, null, getAigua());
+        db.insert(IngredientEntry.TABLE_NAME, null, getCapDeRap());
         db.insert(IngredientEntry.TABLE_NAME, null, getCapDeLluc());
         db.insert(IngredientEntry.TABLE_NAME, null, getSal());
 
         db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getAigua(), getCaldo()));
         db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getSal(), getCaldo()));
         db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getCapDeLluc(), getCaldo()));
+        db.insert(IngredientSubstitut.TABLE_NAME, null, getRelacioSubstitutio(getCaldo(), getCapDeLluc(), getCapDeRap()));
 
-        createSubstitut(db);
+        //Peix a la marinera
+
+        db.insert(ReceptaEntry.TABLE_NAME, null, getPeixALaMarinera());
+
+        db.insert(IngredientEntry.TABLE_NAME, null, getDorada());
+
+
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getSal(), getPeixALaMarinera()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getDorada(), getPeixALaMarinera()));
+        db.insert(IngredientSubstitut.TABLE_NAME, null, getRelacioSubstitutio(getPeixALaMarinera(), getDorada(), getCapDeRap()));
+        db.insert(IngredientSubstitut.TABLE_NAME, null, getRelacioSubstitutio(getPeixALaMarinera(), getDorada(), getCapDeLluc()));
+
+        //Macarrons amb tomaquet
+        db.insert(ReceptaEntry.TABLE_NAME, null, getMacarronsAmbTomaquet());
+
+        db.insert(IngredientEntry.TABLE_NAME, null, getMacarrons());
+        db.insert(IngredientEntry.TABLE_NAME, null, getTomaquet());
+
+
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getMacarrons(), getMacarronsAmbTomaquet()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getTomaquet(), getMacarronsAmbTomaquet()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getSal(), getMacarronsAmbTomaquet()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getAigua(), getMacarronsAmbTomaquet()));
+
+
+        //Melo amb pernil
+
+        db.insert(ReceptaEntry.TABLE_NAME, null, getMeloAmbPernil());
+
+        db.insert(IngredientEntry.TABLE_NAME, null, getMelo());
+        db.insert(IngredientEntry.TABLE_NAME, null, getPernil());
+
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getPernil(), getMeloAmbPernil()));
+        db.insert(IngredientsReceptaEntry.TABLE_NAME, null, getRelacioIngredientRecepta(getMelo(), getMeloAmbPernil()));
+
+
 
     }
 
-    private void createSubstitut(SQLiteDatabase db) {
+    private ContentValues getMelo() {
+        return getIngredientCV("Meló", 10);
+    }
 
+    private ContentValues getPernil() {
+        return getIngredientCV("Pernil", 11);
+    }
 
-        db.insert(IngredientEntry.TABLE_NAME, null, getCapDeRap());
+    private ContentValues getMeloAmbPernil() {
+        ContentValues cv = new ContentValues();
+        cv.put(ReceptaEntry.COL_NAME, "Meló amb pernil");
+        String descr = "1.\tTallem el meló en troços allargats\n" +
+                "2.\tPosem dos troços per plat (1 plat per persona)\n" +
+                "3.\tTallem el pernil (en cas de no tenirlo tallat)\n" +
+                "4.\tPosem 4 talls de pernil per plat\n" +
+                "5.\tServim i degustem\n";
+        cv.put(ReceptaEntry.COL_DESCR, descr);
+        cv.put(ReceptaEntry._ID, 8);
+        return cv;
+    }
 
-        db.execSQL(IngredientSubstitut.SQL_CREATE_TABLE);
+    private ContentValues getDorada() {
+        return getIngredientCV("Dorada", 9);
+    }
 
+    private ContentValues getMacarrons() {
+        return getIngredientCV("Macarrons", 7);
+    }
 
-        ContentValues cv = getRelacioSubstitutio(getCaldo(), getCapDeLluc(), getCapDeRap());
-        db.insert(IngredientSubstitut.TABLE_NAME, null, cv);
+    private ContentValues getTomaquet() {
+        return getIngredientCV("Tomaquet", 8);
+    }
 
+    private ContentValues getMacarronsAmbTomaquet() {
+        ContentValues cv = new ContentValues();
+        cv.put(ReceptaEntry.COL_NAME, "Macarrons amb tomaquet");
+        String descr = "1.\tPosem una cassola amb aigua a bullir\n" +
+                "2.\tAfegim una culleradeta de sal a l'aigua\n" +
+                "3.\tAfegim els macarrons i deixem que bullin per 10 minuts\n" +
+                "4.\tTriturem els tomaquets a banda\n" +
+                "5.\tRetirem els macarrons i colem\n" +
+                "5.\tAfegim el tomaquet triturat\n" +
+                "6.\tServim i degustem\n";
+        cv.put(ReceptaEntry.COL_DESCR, descr);
+        cv.put(ReceptaEntry._ID, 4);
+        return cv;
+    }
+
+    private ContentValues getPeixALaMarinera() {
+        ContentValues cv = new ContentValues();
+        cv.put(ReceptaEntry.COL_NAME, "Cap de peix a la Barbacoa");
+        String descr = "1.\tAfegim sal al peix\n" +
+                "2.\tPosem el peix a a brasa\n" +
+                "3.\tDeixem que quedi doradet\n" +
+                "4.\tServim i degustem\n";
+        cv.put(ReceptaEntry.COL_DESCR, descr);
+        cv.put(ReceptaEntry._ID, 3);
+        return cv;
     }
 
     private ContentValues getRelacioSubstitutio(ContentValues recepta, ContentValues ingre_primari, ContentValues ingre_substitut) {
@@ -102,53 +180,48 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
     }
 
     private ContentValues getPatates() {
+        return getIngredientCV("Patates", 2);
+    }
+
+    @NonNull
+    private ContentValues getIngredientCV(String patates, int id) {
         ContentValues cv = new ContentValues();
-        cv.put(IngredientEntry.COL_NAME, "Patates");
-        cv.put(IngredientEntry._ID, 2);
+        cv.put(IngredientEntry.COL_NAME, patates);
+        cv.put(IngredientEntry._ID, id);
         return cv;
     }
 
     private ContentValues getOus() {
-        ContentValues cv = new ContentValues();
-        cv.put(IngredientEntry.COL_NAME, "Ous");
-        cv.put(IngredientEntry._ID, 1);
-        return cv;
+        return getIngredientCV("Ous", 1);
     }
 
     private ContentValues getAigua() {
-        ContentValues cv = new ContentValues();
-        cv.put(IngredientEntry.COL_NAME, "Aigua");
-        cv.put(IngredientEntry._ID, 3);
-        return cv;
+        return getIngredientCV("Aigua", 3);
     }
 
     private ContentValues getSal() {
-        ContentValues cv = new ContentValues();
-        cv.put(IngredientEntry.COL_NAME, "Sal");
-        cv.put(IngredientEntry._ID, 4);
-        return cv;
+        return getIngredientCV("Sal", 4);
     }
 
 
     private ContentValues getCapDeRap() {
-        ContentValues cv = new ContentValues();
-        cv.put(IngredientEntry.COL_NAME, "Cap de rap");
-        cv.put(IngredientEntry._ID, 5);
-        return cv;
+        return getIngredientCV("Cap de rap", 5);
     }
 
     private ContentValues getCapDeLluc() {
-        ContentValues cv = new ContentValues();
-        cv.put(IngredientEntry.COL_NAME, "Cap de lluç");
-        cv.put(IngredientEntry._ID, 6);
-        return cv;
+        return getIngredientCV("Cap de lluç", 6);
     }
 
 
     private ContentValues getTruita() {
         ContentValues cv = new ContentValues();
-        cv.put(ReceptaEntry.COL_NAME, "Truita");
-        cv.put(ReceptaEntry.COL_DESCR, "Obrir ou en cassola, coure, extreure");
+        cv.put(ReceptaEntry.COL_NAME, "Truita de patates");
+        String descr = "1.\tObrir ous en un plat i batre\n" +
+                "2.\tFregir patates en una cassola\n" +
+                "3.\tAfegir els ous en la cassola\n" +
+                "4.\tAl cap de uns minuts, si la truita esta feta per una banda, donar la volta.\n" +
+                "5.\tI finalment, disfruta de la truita ben feta";
+        cv.put(ReceptaEntry.COL_DESCR, descr);
         cv.put(ReceptaEntry._ID, 1);
         return cv;
     }
@@ -165,7 +238,7 @@ public class ReceptaDBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion == 1) {
-            createSubstitut(db);
+            db.execSQL(IngredientSubstitut.SQL_CREATE_TABLE);
         }
 
     }
