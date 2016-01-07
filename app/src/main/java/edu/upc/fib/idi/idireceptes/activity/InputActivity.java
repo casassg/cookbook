@@ -347,10 +347,10 @@ public class InputActivity extends AppCompatActivity implements IngredientsDialo
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
-                        mButton.setVisibility(View.VISIBLE);
+                        mButton.setEnabled(true);
                         recepta.addIngredient(mItem);
                     } else {
-                        mButton.setVisibility(View.INVISIBLE);
+                        mButton.setEnabled(false);
                         recepta.removeIngredient(mItem);
                         mSubst.setText("");
                         mSubst.setVisibility(View.GONE);
@@ -389,7 +389,7 @@ public class InputActivity extends AppCompatActivity implements IngredientsDialo
 
         private void setIngredientState() {
             mCheckBox.setChecked(true);
-            mButton.setVisibility(View.VISIBLE);
+            mButton.setEnabled(true);
             String ingredients = "";
             if (mSubstituts == null) {
                 mSubstituts = new ArrayList<>();
